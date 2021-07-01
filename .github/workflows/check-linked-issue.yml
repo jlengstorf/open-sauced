@@ -8,9 +8,24 @@ jobs:
       - uses: actions/github-script@v4
         with:
           script: |
+            const prDetails = await github.issues.listEventsForTimeline({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const refs = prDetails.data.filter((detail) => {
+              return detail.event === 'cross-referenced'
+            });
+
+            if (refs.length > 0) {
+              return;
+            }
+
+            // if we get here, there’s no linked comment!
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'hey, welcome! I hope you brought pizza!'
+              body: 'Hey! You didn’t link an issue from this PR. Could you please do that?'
             })
