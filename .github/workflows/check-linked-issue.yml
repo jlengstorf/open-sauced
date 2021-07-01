@@ -14,6 +14,8 @@ jobs:
               repo: context.repo.repo,
             });
 
+            console.log(prDetails.data);
+
             const refs = prDetails.data.filter((detail) => {
               return detail.event === 'cross-referenced'
             });
