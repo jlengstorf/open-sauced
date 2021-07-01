@@ -5,4 +5,4 @@ jobs:
   check-pull-request:
     runs-on: ubuntu-latest
     steps:
-      - runs: echo "Hello world!"
+      - run: echo "Hello world!"
