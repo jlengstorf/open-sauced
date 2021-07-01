@@ -18,6 +18,8 @@ jobs:
               return detail.event === 'cross-referenced'
             });
 
+            console.log(refs);
+
             if (refs.length > 0) {
               return;
             }
