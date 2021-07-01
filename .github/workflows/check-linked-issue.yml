@@ -1,0 +1,35 @@
+name: Check for Linked Issue
+on: pull_request
+
+jobs:
+  check-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v4
+        with:
+          script: |
+            const prDetails = await github.issues.listEventsForTimeline({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            console.log(prDetails.data);
+
+            const refs = prDetails.data.filter((detail) => {
+              return detail.event === 'cross-referenced'
+            });
+
+            console.log(refs);
+
+            if (refs.length > 0) {
+              return;
+            }
+
+            // if we get here, there’s no linked comment!
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Hey! You didn’t link an issue from this PR. Could you please do that?'
+            })
